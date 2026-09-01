@@ -2,16 +2,23 @@
 
 <div class="mb-4">
   <p class="mb-1 text-primary fw-semibold">
-    スタッフ管理
+    form
   </p>
 
   <h1 class="display-6 fw-bold">
-    スタッフ一覧
+    aa
   </h1>
 
   <p class="page-lead text-body-secondary">
     在籍状況・スキル・勤務可否を確認できます。
   </p>
+  <%= form_with url: tutorial_path, method: :get do |form| %>
+  <% if params[:category].present? %>
+    <%= form.hidden_field :category, value: params[:category] %>
+  <% end %>
+  <%= form.search_field :q, value: params[:q] %>
+  <%= form.submit "検索" %>
+<% end %>
 </div>
 
 <% if @staff_members.any? %>
@@ -31,6 +38,7 @@
               <%= staff_member.name %>
             </h2>
 
+            %#
             <dl class="definition-list mb-0">
               <div>
                 <dt>スキル</dt>
@@ -41,7 +49,7 @@
                         .presence || "なし" %>
                 </dd>
               </div>
-
+            %#%#
               <div>
                 <dt>勤務予定</dt>
                 <dd>
@@ -56,6 +64,7 @@
                         .presence || "未登録" %>
                 </dd>
               </div>
+            %#
             </dl>
           </div>
         </article>
