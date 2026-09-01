@@ -2,7 +2,7 @@
 <%= form_with model: @work_request, class: "vstack gap-3" do |form| %>
       <div>
         <%= form.label :buisines_id, "お名前", class: "form-label" %>
-        <%= form.text_area :buisines_id, rows: 6, class: "form-control" %>
+        <%= form.text_field :buisines_id, rows: 6, class: "form-control" %>
       </div>
 
       <div>
@@ -12,22 +12,22 @@
 
       <div>
         <%= form.label :title, "勤務依頼の名称", class: "form-label" %>
-        <%= form.text_area :title, rows: 6, class: "form-control" %>
+        <%= form.text_field :title, rows: 6, class: "form-control" %>
       </div>
 
       <div>
         <%= form.label :starts_at, "開始時刻", class: "form-label" %>
-        <%= form.text_area :starts_at, rows: 6, class: "form-control" %>
+        <%= form.date_field :starts_at, rows: 6, class: "form-control" %>
       </div>
 
       <div>
         <%= form.label :ends_at, "終了時刻", class: "form-label" %>
-        <%= form.text_area :ends_at, rows: 6, class: "form-control" %>
+        <%= form.date_field :ends_at, rows: 6, class: "form-control" %>
       </div>
 
       <div>
         <%= form.label :required_staff_count, "必要人数", class: "form-label" %>
-        <%= form.text_area :required_staff_count, rows: 6, class: "form-control" %>
+        <%= form.number_field :required_staff_count, rows: 6, class: "form-control" %>
       </div>
 
       <div>
@@ -35,10 +35,10 @@
         <%= form.text_area :status, rows: 6, class: "form-control" %>
       </div>
 
-
       <div>
         <%= form.label :notes, "備考", class: "form-label" %>
         <%= form.text_area :notes, rows: 6, class: "form-control" %>
       </div>
+
       <div><%= form.submit "保存する", class: "btn btn-primary" %></div>
     <% end %>
