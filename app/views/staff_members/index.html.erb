@@ -2,56 +2,68 @@
 
 <div class="mb-4">
   <p class="mb-1 text-primary fw-semibold">
-    form
+    スタッフ管理
   </p>
 
   <h1 class="display-6 fw-bold">
-    勤務依頼フォーム
-  </h1><br>
-
-  <%= form_with model: @work_request do |form| %>
-    <%= form.search_field :q, value: params[:q] %>
-
-  <% end %>
+    スタッフ一覧
+  </h1>
 
   <p class="page-lead text-body-secondary">
-    会社名
+    在籍状況・スキル・勤務可否を確認できます。
   </p>
-  <%= form_with url: tutorial_path, method: :get do |form| %>
-    <%= form.search_field :q, value: params[:q] %>
-  <% end %><br><br>
-
-  <p class="page-lead text-body-secondary">
-    日時
-  </p>
-  <%= form_with url: tutorial_path, method: :get do |form| %>
-    <%= form.search_field :q, value: params[:q] %>
-  <% end %><br><br>
-
-  <p class="page-lead text-body-secondary">
-    開始時間
-  </p>
-  <%= form_with url: tutorial_path, method: :get do |form| %>
-    <%= form.search_field :q, value: params[:q] %>
-  <% end %><br><br>
-
-  <p class="page-lead text-body-secondary">
-    終了時間
-  </p>
-  <%= form_with url: tutorial_path, method: :get do |form| %>
-    <%= form.search_field :q, value: params[:q] %>
-  <% end %><br><br>
-
-  <p class="page-lead text-body-secondary">
-    必要な人数
-  </p>
-  <%= form_with url: tutorial_path, method: :get do |form| %>
-    <%= form.search_field :q, value: params[:q] %>
-  <% end %><br><br>
-
-  <%= form_with url: tutorial_path, method: :get do |form| %>
-    <%= form.submit "確定" %>
-  <% end %>
-
-
 </div>
+
+<% if @staff_members.any? %>
+  <div class="row g-4">
+    <% @staff_members.each do |staff_member| %>
+      <div class="col-12 col-md-6">
+        <article class="card h-100 shadow-sm">
+          <div class="card-body">
+            <span class="badge text-bg-secondary mb-3">
+              <%= enum_label(
+                    staff_member,
+                    :employment_status
+                  ) %>
+            </span>
+
+            <h2 class="h5 card-title">
+              <%= staff_member.name %>
+            </h2>
+
+            <dl class="definition-list mb-0">
+              <div>
+                <dt>スキル</dt>
+                <dd>
+                  <%= staff_member.skills
+                        .map(&:name)
+                        .join("、")
+                        .presence || "なし" %>
+                </dd>
+              </div>
+
+              <div>
+                <dt>勤務予定</dt>
+                <dd>
+                  <%= staff_member.availabilities
+                        .map do |availability|
+                          enum_label(
+                            availability,
+                            :status
+                          )
+                        end
+                        .join("、")
+                        .presence || "未登録" %>
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </article>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="alert alert-info">
+    スタッフはまだ登録されていません。
+  </div>
+<% end %>

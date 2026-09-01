@@ -1,0 +1,9 @@
+<%= form_with model: @work_request, class: "vstack gap-3" do |form| %>
+      <div>
+        <%= form.label :notes, "備考", class: "form-label" %>
+        <%= form.text_area :notes, rows: 6, class: "form-control" %>
+      </div>
+      <div><%= form.submit "保存する", class: "btn btn-primary" %></div>
+    <% end %>
+
+    <%= @work_request.inspect %>
