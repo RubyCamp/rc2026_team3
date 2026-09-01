@@ -1,4 +1,3 @@
-
 <%= form_with model: @work_request, class: "vstack gap-3" do |form| %>
       <div>
         <%= form.label :buisines_id, "お名前", class: "form-label" %>
@@ -7,7 +6,7 @@
 
       <div>
         <%= form.label :required_skill_id, "必要なスキル", class: "form-label" %>
-        <%= form.text_area :required_skill_id, rows: 6, class: "form-control" %>
+        <%= form.collection_select :skill_id, @skills, :id, :name, class: "form-control" %>
       </div>
 
       <div>

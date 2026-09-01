@@ -7,6 +7,7 @@ class WorkRequestsController < ApplicationController
 
   def new
     @work_request = WorkRequest.new
+    @skills = Skill.all
   end
 
   def create
