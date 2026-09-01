@@ -31,7 +31,7 @@
 
       <div>
         <%= form.label :status, "依頼状態", class: "form-label" %>
-        <%= form.text_area :status, rows: 6, class: "form-control" %>
+        <%= form.select :status, WorkRequest.statuses.keys, class: "form-control" %>
       </div>
 
       <div>
