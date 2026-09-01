@@ -9,6 +9,18 @@
     勤務依頼フォーム
   </h1><br>
 
+  <%= form_with model: @work_request do |form| %>
+    <%= form.search_field :q, value: params[:q] %>
+
+  <% end %>
+
+  <p class="page-lead text-body-secondary">
+    会社名
+  </p>
+  <%= form_with url: tutorial_path, method: :get do |form| %>
+    <%= form.search_field :q, value: params[:q] %>
+  <% end %><br><br>
+
   <p class="page-lead text-body-secondary">
     日時
   </p>
@@ -40,4 +52,6 @@
   <%= form_with url: tutorial_path, method: :get do |form| %>
     <%= form.submit "確定" %>
   <% end %>
+
+
 </div>
