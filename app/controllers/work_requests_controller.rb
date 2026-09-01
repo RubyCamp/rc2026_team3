@@ -9,6 +9,26 @@ class WorkRequestsController < ApplicationController
     @work_request = WorkRequest.new
   end
 
+  def create
+    #   #@work_request = WorkRequest.create!(
+    #     business_id: 1,
+    #     required_skill_id: 1,
+    #     starts_at: Time.current,
+    #     ends_at: Time.current + 1.hour,
+    #     required_staff_count: 1,
+    #     title: "勤務依頼",
+    #     notes: work_request_params[:notes]
+    #   )
+
+    #   redirect_to @work_request, notice: "勤務依頼を作成しました。"
+    # rescue ActiveRecord::RecordInvalid => error
+    #   raise unless error.record.is_a?(WorkRequest)
+
+    #   @work_request = error.record
+    #   render :new, status: :unprocessable_content
+  end
+
+
   def show
     @work_request = WorkRequest
       .includes(:business, :required_skill, assignments: :staff_member)

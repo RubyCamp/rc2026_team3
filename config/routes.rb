@@ -17,7 +17,7 @@ Rails.application.routes.draw do
     root "work_requests#index"
   # root "work_form#form"
 
-  resources :work_requests, only: %i[index show edit update new]
+  resources :work_requests, only: %i[index show edit update new create]
   resources :staff_members, only: [ :index ]
   get "examples/local-data",
     to: "examples#local_data",
