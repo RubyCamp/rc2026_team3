@@ -1,12 +1,16 @@
+ <% @work_request.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+
 <%= form_with model: @work_request, class: "vstack gap-3" do |form| %>
-      <div>
-        <%= form.label :buisines_id, "お名前", class: "form-label" %>
-        <%= form.text_field :buisines_id, rows: 6, class: "form-control" %>
-      </div>
+      <!-- <div> -->
+        <%#= form.label :buisines_id, "", class: "form-label" %>
+        <%#= form.text_field :buisines_id, rows: 6, class: "form-control" %>
+      <!-- </div> -->
 
       <div>
         <%= form.label :required_skill_id, "必要なスキル", class: "form-label" %>
-        <%= form.collection_select :skill_id, @skills, :id, :name, class: "form-control" %>
+        <%= form.collection_select :required_skill_id, @skills, :id, :name, class: "form-control" %>
       </div>
 
       <div>

@@ -13,12 +13,14 @@ class WorkRequestsController < ApplicationController
   def create
       @work_request = WorkRequest.create!(
         business_id: 1,
-        required_skill_id: 1,
-        starts_at: Time.current,
-        ends_at: Time.current + 1.hour,
-        required_staff_count: 1,
-        title: "勤務依頼",
-        notes: work_request_params[:notes]
+
+        required_skill_id: work_request_params[:required_skill_id],
+        starts_at: work_request_params[:starts_at],
+        ends_at: work_request_params[:ends_at],
+        required_staff_count: work_request_params[:required_staff_count],
+        title: work_request_params[:title],
+        notes: work_request_params[:notes],
+        status: work_request_params[:status]
       )
 
       redirect_to @work_request, notice: "勤務依頼を作成しました。"
@@ -26,6 +28,7 @@ class WorkRequestsController < ApplicationController
       raise unless error.record.is_a?(WorkRequest)
 
       @work_request = error.record
+      @skills = Skill.all
       render :new, status: :unprocessable_content
   end
 
@@ -59,6 +62,6 @@ class WorkRequestsController < ApplicationController
   private
 
   def work_request_params
-    params.expect(work_request: [ :notes ])
+    params.expect(work_request: [ :buisines_id, :required_skill_id, :title, :starts_at, :ends_at, :required_staff_count, :status, :notes ])
   end
 end
