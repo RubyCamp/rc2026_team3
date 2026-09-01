@@ -9,6 +9,9 @@ class WorkRequestsController < ApplicationController
     @work_request = WorkRequest
       .includes(:business, :required_skill, assignments: :staff_member)
       .find(params[:id])
+
+    @judge = WorkRequest.is_resource_enought(@work_request)
+
   end
 
   def edit

@@ -67,6 +67,9 @@
         <dd>
           <%= @work_request.assignments.size %>名
         </dd>
+        <%if @judge == false %>
+          人数が不足しています。
+        <% end %>
       </div>
     </dl>
   </div>

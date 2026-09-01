@@ -132,6 +132,15 @@ def self.business_changes?(record)
   record.saved_changes.except("updated_at").any?
 end
 
+
+def self.is_resource_enought(work_request)
+    if work_request.assignments.size == work_request["required_staff_count"]
+      return true
+    else
+      return false
+    end
+end
+
 private_class_method :business_changes?
   private
 
