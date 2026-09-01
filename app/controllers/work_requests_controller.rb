@@ -5,6 +5,10 @@ class WorkRequestsController < ApplicationController
       .order(:starts_at)
   end
 
+  def new
+    @work_request = WorkRequest.new
+  end
+
   def show
     @work_request = WorkRequest
       .includes(:business, :required_skill, assignments: :staff_member)
