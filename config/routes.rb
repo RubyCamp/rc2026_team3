@@ -14,8 +14,20 @@ Rails.application.routes.draw do
 
     # Defines the root path route ("/")
     # root "posts#index"
-    root "work_requests#index"
-  # root "work_form#form"
+    root "home#index"
+
+  get "login", to: "sessions#new"
+  post "login", to: "sessions#create"
+  delete "logout", to: "sessions#destroy"
+
+  namespace :admin do
+    get "calendar", to: "calendar#index"
+    resources :details, only: [ :show ]
+  end
+
+  namespace :provider do
+    get "detail", to: "detail#show"
+  end
 
   resources :work_requests, only: %i[index show edit update new create]
   resources :staff_members, only: [ :index ]

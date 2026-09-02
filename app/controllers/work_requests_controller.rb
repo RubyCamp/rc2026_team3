@@ -62,6 +62,6 @@ class WorkRequestsController < ApplicationController
   private
 
   def work_request_params
-    params.expect(work_request: [ :buisines_id, :required_skill_id, :title, :starts_at, :ends_at, :required_staff_count, :status, :notes ])
+    params.expect(work_request: [ :busines_id, :required_skill_id, :title, :starts_at, :ends_at, :required_staff_count, :status, :notes ])
   end
 end
