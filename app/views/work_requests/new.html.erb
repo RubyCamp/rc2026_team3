@@ -11,37 +11,37 @@
       <h1> 勤務依頼の新規作成</h1>
       <div>
         <%= form.label :required_skill_id, "必要なスキル", class: "form-label" %>
-        <%= form.collection_select :required_skill_id, @skills, :id, :name, class: "form-control" %>
+        <%= form.collection_select :required_skill_id, @skills, :id, :name,{},{class: "form-control", required:true} %>
       </div>
 
       <div>
         <%= form.label :title, "勤務依頼の名称", class: "form-label" %>
-        <%= form.text_field :title, rows: 6, class: "form-control" %>
+        <%= form.text_field :title,{ rows: 6, class: "form-control" ,required:true}%>
       </div>
 
       <div>
         <%= form.label :starts_at, "開始時刻", class: "form-label" %>
-        <%= form.datetime_field :starts_at, rows: 6, class: "form-control" %>
+        <%= form.datetime_field :starts_at,{ rows: 6, class: "form-control" ,required:true}%>
       </div>
 
       <div>
         <%= form.label :ends_at, "終了時刻", class: "form-label" %>
-        <%= form.datetime_field :ends_at, rows: 6, class: "form-control" %>
+        <%= form.datetime_field :ends_at, rows: 6, class: "form-control",required:true %>
       </div>
 
       <div>
         <%= form.label :required_staff_count, "必要人数", class: "form-label" %>
-        <%= form.number_field :required_staff_count, rows: 6, class: "form-control" %>
+        <%= form.number_field :required_staff_count, rows: 6, class: "form-control" ,required:true,min:1,step:1%>
       </div>
 
       <div>
         <%= form.label :status, "依頼状態", class: "form-label" %>
-        <%= form.select :status, WorkRequest.statuses.keys, class: "form-control" %>
+        <%= form.select :status, WorkRequest.statuses.keys, {},{class: "form-control" ,required:true}%>
       </div>
 
       <div>
         <%= form.label :notes, "備考", class: "form-label" %>
-        <%= form.text_area :notes, rows: 6, class: "form-control" %>
+        <%= form.text_area :notes, rows: 6, class: "form-control"%>
       </div>
 
       <div><%= form.submit "保存する", class: "btn btn-primary" %></div>
