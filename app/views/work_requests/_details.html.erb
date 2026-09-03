@@ -75,12 +75,7 @@
 
 <section class="card shadow-sm mb-4">
   <div class="card-body">
-    <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
-      <h2 class="h4 card-title mb-0">備考</h2>
-      <% if show_edit_link %>
-        <%= link_to "備考を編集", edit_work_request_path(work_request), class: "btn btn-outline-primary" %>
-      <% end %>
-    </div>
+    <h2 class="h4 card-title mb-3">備考</h2>
 
     <% if work_request.notes.present? %>
       <%= simple_format work_request.notes, class: "mb-0" %>
@@ -89,6 +84,7 @@
     <% end %>
   </div>
 </section>
+
 
 <section class="card shadow-sm">
   <div class="card-body">
@@ -126,3 +122,14 @@
     <% end %>
   </div>
 </section>
+
+
+<% if show_edit_link %>
+  <% edit_url = local_assigns[:edit_path].presence || edit_work_request_path(work_request) %>
+  <% if controller_path.start_with?("provider/") %>
+    <% edit_url = edit_provider_work_request_path(work_request) %>
+  <% end %>
+  <div class="d-flex justify-content-end mt-4">
+    <%= link_to "依頼を編集", edit_url, class: "btn btn-outline-primary" %>
+  </div>
+<% end %>
