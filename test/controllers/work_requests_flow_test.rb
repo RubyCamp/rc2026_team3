@@ -7,10 +7,15 @@ class WorkRequestsFlowTest < ActionDispatch::IntegrationTest
       contact_name: "担当者",
       contact_phone: "00-0000-0000"
     )
-    skill = Skill.create!(code: "RECEPTION_#{SecureRandom.hex(4)}", name: "受付")
+    @other_business = Business.create!(
+      name: "別会館",
+      contact_name: "別担当者",
+      contact_phone: "11-1111-1111"
+    )
+    @skill = Skill.create!(code: "RECEPTION_#{SecureRandom.hex(4)}", name: "受付")
     @work_request = WorkRequest.create!(
       business: @business,
-      required_skill: skill,
+      required_skill: @skill,
       title: "受付業務",
       starts_at: Time.zone.local(2026, 8, 20, 10),
       ends_at: Time.zone.local(2026, 8, 20, 12),
@@ -26,6 +31,33 @@ class WorkRequestsFlowTest < ActionDispatch::IntegrationTest
     assert_select "h2", text: "備考"
     assert_select "p", text: "集合場所は正面玄関"
     assert_select "a[href=?]", edit_work_request_path(@work_request), text: "備考を編集"
+  end
+
+  test "Providerは自社の勤務依頼を表示し編集リンクを表示しない" do
+    post login_path, params: { role: "business", business_id: @business.id }
+
+    get provider_work_request_path(@work_request)
+
+    assert_response :success
+    assert_select "h1", text: "受付業務"
+    assert_select "p", text: "集合場所は正面玄関"
+    assert_select "a[href=?]", edit_work_request_path(@work_request), count: 0
+  end
+
+  test "Providerが他社の勤務依頼へアクセスすると一覧へ戻る" do
+    other_work_request = WorkRequest.create!(
+      business: @other_business,
+      required_skill: @skill,
+      title: "別会館の受付業務",
+      starts_at: Time.zone.local(2026, 8, 21, 10),
+      ends_at: Time.zone.local(2026, 8, 21, 12),
+      required_staff_count: 1
+    )
+    post login_path, params: { role: "business", business_id: @business.id }
+
+    get provider_work_request_path(other_work_request)
+
+    assert_redirected_to provider_detail_path
   end
 
   test "備考だけを更新して詳細画面へ戻る" do
