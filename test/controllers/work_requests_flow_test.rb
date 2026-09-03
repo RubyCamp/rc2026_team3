@@ -30,7 +30,7 @@ class WorkRequestsFlowTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h2", text: "備考"
     assert_select "p", text: "集合場所は正面玄関"
-    assert_select "a[href=?]", edit_work_request_path(@work_request), text: "備考を編集"
+    assert_select "a[href=?]", edit_work_request_path(@work_request), text: "依頼を編集"
   end
 
   test "Providerは自社の勤務依頼を表示し編集リンクを表示しない" do
@@ -58,6 +58,44 @@ class WorkRequestsFlowTest < ActionDispatch::IntegrationTest
     get provider_work_request_path(other_work_request)
 
     assert_redirected_to provider_detail_path
+  end
+
+  test "Providerが自社の勤務依頼を全項目編集できる" do
+    post login_path, params: { role: "business", business_id: @business.id }
+
+    get provider_work_request_path(@work_request)
+    assert_select "a[href=?]", edit_provider_work_request_path(@work_request), text: "依頼を編集"
+
+    get edit_provider_work_request_path(@work_request)
+    assert_response :success
+    assert_select "select[name=?]", "work_request[status]"
+    assert_select "option[value=?]", "confirmed", count: 0
+    assert_select "input[name=?]", "work_request[title]"
+    assert_select "textarea[name=?]", "work_request[notes]"
+
+    patch provider_work_request_path(@work_request), params: {
+      work_request: {
+        required_skill_id: @skill.id,
+        title: "受付業務（更新）",
+        starts_at: "2026-08-20T09:00",
+        ends_at: "2026-08-20T12:30",
+        required_staff_count: 2,
+        status: "draft",
+        notes: "集合場所は南側入口"
+      }
+    }
+
+    assert_redirected_to provider_work_request_path(@work_request)
+    @work_request.reload
+    assert_equal "受付業務（更新）", @work_request.title
+    assert_equal 2, @work_request.required_staff_count
+    assert_equal "draft", @work_request.status
+    assert_equal "集合場所は南側入口", @work_request.notes
+
+    follow_redirect!
+    assert_select ".alert-success", text: /勤務依頼を更新しました/
+    assert_select "h1", text: "受付業務（更新）"
+    assert_select "span.badge", text: /Draft/
   end
 
   test "Providerの勤務依頼作成画面を表示する" do
@@ -120,7 +158,7 @@ class WorkRequestsFlowTest < ActionDispatch::IntegrationTest
     get edit_work_request_path(@work_request)
 
     assert_response :success
-    assert_select "h1", text: "勤務依頼の備考を編集"
+    assert_select "h1", text: "勤務依頼を編集"
     assert_select "form[action=?]", work_request_path(@work_request)
     assert_select "textarea[name=?]", "work_request[notes]", text: "集合場所は正面玄関"
   end
@@ -135,7 +173,7 @@ class WorkRequestsFlowTest < ActionDispatch::IntegrationTest
     }
 
     assert_response :unprocessable_content
-    assert_not_includes response.body, "勤務依頼の備考を編集"
+    assert_not_includes response.body, "勤務依頼を編集"
   ensure
     WorkRequest.define_singleton_method(:update_details!, original)
   end

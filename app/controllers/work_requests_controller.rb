@@ -12,7 +12,7 @@ class WorkRequestsController < ApplicationController
   def update
     @work_request = WorkRequest.update_details!(
       id: params[:id],
-      attributes: work_request_params
+      attributes: notes_update_params
     )
 
     redirect_to @work_request, notice: "勤務依頼の備考を更新しました。"

@@ -27,7 +27,7 @@ Rails.application.routes.draw do
 
   namespace :provider do
     get "detail", to: "detail#show"
-    resources :work_requests, only: [ :show, :new, :create ]
+    resources :work_requests, only: %i[show new create edit update]
   end
 
   resources :work_requests, only: %i[show edit update]
