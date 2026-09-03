@@ -8,6 +8,10 @@
   <h1 class="display-6 fw-bold">
     勤務依頼一覧
   </h1>
+
+  <%= link_to "勤務依頼を新規作成",
+              new_provider_work_request_path,
+              class: "btn btn-primary" %>
 </div>
 
 <% if @work_requests.any? %>
