@@ -46,7 +46,7 @@ class WorkRequestsController < ApplicationController
   def update
     @work_request = WorkRequest.update_details!(
       id: params[:id],
-      attributes: work_request_params
+      attributes: notes_update_params
     )
 
     redirect_to @work_request, notice: "勤務依頼の備考を更新しました。"
@@ -62,6 +62,10 @@ class WorkRequestsController < ApplicationController
   private
 
   def work_request_params
-    params.expect(work_request: [ :busines_id, :required_skill_id, :title, :starts_at, :ends_at, :required_staff_count, :status, :notes ])
+    params.expect(work_request: [ :business_id, :required_skill_id, :title, :starts_at, :ends_at, :required_staff_count, :status, :notes ])
+  end
+
+  def notes_update_params
+    params.expect(work_request: [ :notes ])
   end
 end

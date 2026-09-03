@@ -1,4 +1,4 @@
-<% content_for :title, "勤務依頼の新規作成" %>
+<% content_for :title, "勤務依頼の編集" %>
 
 <div class="mb-4">
   <p class="mb-1 text-primary fw-semibold">
@@ -6,11 +6,11 @@
   </p>
 
   <h1 class="display-6 fw-bold">
-    勤務依頼の新規作成
+    勤務依頼の編集
   </h1>
 
   <p class="page-lead text-body-secondary">
-    新しい勤務依頼を作成します。
+    依頼内容を更新します。
   </p>
 </div>
 
@@ -27,35 +27,41 @@
 
 <div class="card shadow-sm">
   <div class="card-body">
-    <%= form_with model: @work_request, class: "vstack gap-3" do |form| %>
+    <%= form_with model: @work_request,
+                  url: provider_work_request_path(@work_request),
+                  method: :patch,
+                  class: "vstack gap-3" do |form| %>
       <div>
         <%= form.label :required_skill_id, "必要なスキル", class: "form-label" %>
-        <%= form.collection_select :required_skill_id, @skills, :id, :name,{}, {class: "form-select" ,required:true} %>
+        <%= form.collection_select :required_skill_id, @skills, :id, :name, {}, { class: "form-select", required: true } %>
       </div>
 
       <div>
         <%= form.label :title, "勤務依頼の名称", class: "form-label" %>
-        <%= form.text_field :title,{ rows: 6, class: "form-control" ,required:true} %>
+        <%= form.text_field :title, class: "form-control", required: true %>
       </div>
 
       <div>
         <%= form.label :starts_at, "開始時刻", class: "form-label" %>
-        <%= form.datetime_field :starts_at,{ rows: 6, class: "form-control" ,required:true} %>
+        <%= form.datetime_field :starts_at, class: "form-control", required: true %>
       </div>
 
       <div>
         <%= form.label :ends_at, "終了時刻", class: "form-label" %>
-        <%= form.datetime_field :ends_at, rows: 6, class: "form-control",required:true %>
+        <%= form.datetime_field :ends_at, class: "form-control", required: true %>
       </div>
 
       <div>
         <%= form.label :required_staff_count, "必要人数", class: "form-label" %>
-        <%= form.number_field :required_staff_count, rows: 6, class: "form-control" ,required:true,min:1,step:1 %>
+        <%= form.number_field :required_staff_count, class: "form-control", required: true, min: 1, step: 1 %>
       </div>
 
       <div>
         <%= form.label :status, "依頼状態", class: "form-label" %>
-        <%= form.select :status, work_request_status_options(exclude_confirmed: true), {}, { class: "form-select", required: true } %>
+        <%= form.select :status,
+                        work_request_status_options(exclude_confirmed: true),
+                        {},
+                        { class: "form-select", required: true } %>
       </div>
 
       <div>
@@ -65,7 +71,7 @@
 
       <div class="d-flex gap-2">
         <%= form.submit "保存する", class: "btn btn-primary" %>
-        <%= link_to "キャンセル", work_requests_path, class: "btn btn-outline-secondary" %>
+        <%= link_to "キャンセル", provider_work_request_path(@work_request), class: "btn btn-outline-secondary" %>
       </div>
     <% end %>
   </div>
