@@ -60,6 +60,43 @@ class WorkRequestsFlowTest < ActionDispatch::IntegrationTest
     assert_redirected_to provider_detail_path
   end
 
+  test "Providerの勤務依頼作成画面を表示する" do
+    post login_path, params: { role: "business", business_id: @business.id }
+
+    get new_provider_work_request_path
+
+    assert_response :success
+    assert_select "h1", text: "勤務依頼の新規作成"
+    assert_select "form[action=?]", provider_work_requests_path
+  end
+
+  test "Providerが作成した勤務依頼にログイン中の事業者IDを保存する" do
+    post login_path, params: { role: "business", business_id: @business.id }
+
+    assert_difference("WorkRequest.count", 1) do
+      post provider_work_requests_path, params: {
+        work_request: {
+          required_skill_id: @skill.id,
+          title: "新しい受付業務",
+          starts_at: "2026-08-22T10:00",
+          ends_at: "2026-08-22T12:00",
+          required_staff_count: 2,
+          status: "draft",
+          notes: "作成時の備考"
+        }
+      }
+    end
+
+    assert_redirected_to provider_detail_path
+    assert_equal @business.id, WorkRequest.order(:created_at).last.business_id
+  end
+
+  test "管理者向け勤務依頼作成画面は表示しない" do
+    get "/work_requests/new"
+
+    assert_response :not_found
+  end
+
   test "備考だけを更新して詳細画面へ戻る" do
     assert_difference("ChangeEvent.count", 1) do
       patch work_request_path(@work_request), params: {

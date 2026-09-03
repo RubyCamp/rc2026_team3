@@ -27,10 +27,10 @@ Rails.application.routes.draw do
 
   namespace :provider do
     get "detail", to: "detail#show"
-    resources :work_requests, only: [ :show ]
+    resources :work_requests, only: [ :show, :new, :create ]
   end
 
-  resources :work_requests, only: %i[index show edit update new create]
+  resources :work_requests, only: %i[index show edit update]
   resources :staff_members, only: [ :index ]
   get "examples/local-data",
     to: "examples#local_data",
