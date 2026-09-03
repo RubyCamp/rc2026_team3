@@ -46,3 +46,120 @@ body {
   margin: 0;
   text-align: right;
 }
+
+.gantt-wrapper {
+  overflow-x: auto;
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+}
+
+.gantt {
+  display: grid;
+  grid-template-columns: 10rem repeat(var(--gantt-days), minmax(2rem, 1fr));
+  min-width: max-content;
+}
+
+.gantt-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.25rem;
+  font-weight: 600;
+  font-size: 0.75rem;
+  background-color: var(--bs-tertiary-bg);
+  border-bottom: 2px solid var(--bs-border-color);
+}
+
+.gantt-corner {
+  grid-column: 1;
+  position: sticky;
+  left: 0;
+  z-index: 3;
+}
+
+.gantt-day-header {
+  flex-direction: column;
+  gap: 0;
+  line-height: 1.1;
+  border-left: 1px dashed var(--bs-border-color);
+}
+
+.gantt-day-weekday {
+  font-weight: 400;
+  font-size: 0.65rem;
+  color: var(--bs-secondary-color);
+}
+
+.gantt-swatch {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.gantt-business-label {
+  grid-column: 1;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-weight: 600;
+  background-color: var(--bs-body-bg);
+  border-top: var(--bs-border-width) solid var(--bs-border-color);
+  border-right: var(--bs-border-width) solid var(--bs-border-color);
+}
+
+.gantt-grid-cell {
+  border-top: var(--bs-border-width) solid var(--bs-border-color);
+  border-right: 1px dashed var(--bs-border-color);
+}
+
+.gantt-row {
+  position: relative;
+}
+
+.gantt-bar-slot {
+  position: absolute;
+}
+
+.gantt-bar {
+  position: absolute;
+  top: 3px;
+  right: 4px;
+  bottom: 3px;
+  left: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 0.6rem;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.gantt-bar-link {
+  padding: 0.2rem 0.6rem 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 0.7rem;
+  color: #fff;
+}
+
+.gantt-bar-link:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.gantt-bar-count {
+  align-self: flex-end;
+  padding: 0 0.5rem 0.2rem;
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.85);
+}
