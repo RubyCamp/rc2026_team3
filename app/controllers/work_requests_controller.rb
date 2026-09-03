@@ -1,8 +1,10 @@
 class WorkRequestsController < ApplicationController
   def index
+    @month = parse_month(params[:month]) || Date.current.beginning_of_month
+    @businesses = Business.for_selection
     @work_requests = WorkRequest
-      .includes(:business, :required_skill, assignments: :staff_member)
-      .order(:starts_at)
+      .for_list
+      .where(starts_at: @month..@month.end_of_month.end_of_day)
   end
 
   def new
@@ -60,6 +62,14 @@ class WorkRequestsController < ApplicationController
   end
 
   private
+
+  def parse_month(value)
+    return if value.blank?
+
+    Date.strptime(value, "%Y-%m").beginning_of_month
+  rescue ArgumentError
+    nil
+  end
 
   def work_request_params
     params.expect(work_request: [ :busines_id, :required_skill_id, :title, :starts_at, :ends_at, :required_staff_count, :status, :notes ])

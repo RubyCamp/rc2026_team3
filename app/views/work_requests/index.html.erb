@@ -1,4 +1,4 @@
-<% content_for :title, "勤務依頼一覧" %>
+<% content_for :title, "勤務依頼ガントチャート" %>
 
 <a class="link-dark" href="/work_requests/new">勤務依頼</a>
 
@@ -7,85 +7,95 @@
     勤務調整
   </p>
 
-  <h1 class="display-6 fw-bold">
-    勤務依頼一覧
-  </h1>
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <h1 class="display-6 fw-bold mb-0">
+      <%= @month.strftime("%Y年%-m月") %> 勤務依頼ガントチャート
+    </h1>
 
-  <p class="page-lead text-body-secondary">
-    依頼内容と現在の割当状況を確認できます。
+    <div class="btn-group" role="group" aria-label="月の切り替え">
+      <%= link_to "← #{(@month - 1.month).strftime("%-m月")}",
+                  work_requests_path(month: (@month - 1.month).strftime("%Y-%m")),
+                  class: "btn btn-outline-secondary" %>
+      <%= link_to "今月", work_requests_path, class: "btn btn-outline-secondary" %>
+      <%= link_to "#{(@month + 1.month).strftime("%-m月")} →",
+                  work_requests_path(month: (@month + 1.month).strftime("%Y-%m")),
+                  class: "btn btn-outline-secondary" %>
+    </div>
+  </div>
+
+  <p class="page-lead text-body-secondary mt-2">
+    会社ごとの勤務依頼を日別に確認できます。
   </p>
 </div>
 
-<% if @work_requests.any? %>
-  <div class="row g-4">
-    <% @work_requests.each do |work_request| %>
-      <div class="col-12 col-md-6 col-xl-4">
-        <article
-          class="card work-request-card h-100 shadow-sm"
-        >
-          <div class="card-body">
-            <div
-              class="
-                d-flex
-                justify-content-between
-                align-items-center
-                gap-3
-                mb-3
-              "
-            >
-              <span class="badge text-bg-primary">
-                <%= enum_label(work_request, :status) %>
-              </span>
-
-              <small class="text-body-secondary">
-                <%= l work_request.starts_at,
-                      format: :short %>
-              </small>
-            </div>
-
-            <h2 class="h5 card-title">
-              <%= link_to(
-                    work_request.title,
-                    work_request,
-                    class: "link-dark stretched-link"
-                  ) %>
-            </h2>
-
-            <dl class="definition-list mb-0">
-              <div>
-                <dt>事業者</dt>
-                <dd><%= work_request.business.name %></dd>
-              </div>
-
-              <div>
-                <dt>必要人数</dt>
-                <dd>
-                  <%= work_request.required_staff_count %>名
-                </dd>
-              </div>
-
-              <div>
-                <dt>割当済み</dt>
-                <dd>
-                  <%= work_request.assignments.size %>名
-                </dd>
-              </div>
-
-              <div>
-                <dt>必要スキル</dt>
-                <dd>
-                  <%= work_request.required_skill&.name ||
-                      "指定なし" %>
-                </dd>
-              </div>
-            </dl>
-          </div>
-        </article>
-      </div>
-    <% end %>
+<% if @businesses.empty? %>
+  <div class="alert alert-info">
+    事業者が登録されていません。
+  </div>
+<% elsif @work_requests.empty? %>
+  <div class="alert alert-info">
+    <%= @month.strftime("%Y年%-m月") %>の勤務依頼はまだ登録されていません。
   </div>
 <% else %>
-  <div class="alert alert-info">
-    勤務依頼はまだ登録されていません。
+  <% days_in_month = @month.end_of_month.day %>
+  <% gantt_rows = gantt_rows_for(@businesses, @work_requests, @month) %>
+  <% row_heights = gantt_rows.map { |row| "#{gantt_row_height_rem(row[:lanes_count])}rem" }.join(" ") %>
+
+  <div class="gantt-wrapper shadow-sm">
+    <div
+      class="gantt"
+      style="--gantt-days: <%= days_in_month %>; grid-template-rows: 2.5rem <%= row_heights %>;"
+    >
+      <div class="gantt-header gantt-corner"></div>
+
+      <% (1..days_in_month).each do |day| %>
+        <div
+          class="gantt-header gantt-day-header"
+          style="grid-column: <%= day + 1 %>;"
+          data-controller="gantt-weekday"
+          data-gantt-weekday-date-value="<%= (@month + (day - 1).days).iso8601 %>"
+        >
+          <span class="gantt-day-number"><%= day %></span>
+          <span class="gantt-day-weekday" data-gantt-weekday-target="label"></span>
+        </div>
+      <% end %>
+
+      <% gantt_rows.each_with_index do |row, index| %>
+        <div class="gantt-business-label" style="grid-row: <%= index + 2 %>;">
+          <span class="gantt-swatch" style="background-color: <%= gantt_business_color(index) %>;"></span>
+          <%= row[:business].name %>
+        </div>
+
+        <% (1..days_in_month).each do |day| %>
+          <div class="gantt-grid-cell" style="grid-column: <%= day + 1 %>; grid-row: <%= index + 2 %>;"></div>
+        <% end %>
+
+        <div
+          class="gantt-row"
+          style="grid-column: 2 / <%= days_in_month + 2 %>; grid-row: <%= index + 2 %>;"
+        >
+          <% row[:bars].each do |bar| %>
+            <div
+              class="gantt-bar-slot"
+              style="
+                left: <%= bar[:left_pct] %>%;
+                width: <%= bar[:width_pct] %>%;
+                top: <%= bar[:top_pct] %>%;
+                height: <%= bar[:height_pct] %>%;
+              "
+            >
+              <div
+                class="gantt-bar"
+                style="background-color: <%= gantt_business_color(index) %>;"
+                title="<%= bar[:work_request].title %>"
+              >
+                <%= link_to bar[:work_request].title, bar[:work_request], class: "gantt-bar-link" %>
+                <span class="gantt-bar-count"><%= bar[:work_request].required_staff_count %>名</span>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
   </div>
 <% end %>
