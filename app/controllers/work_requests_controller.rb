@@ -22,7 +22,7 @@ class WorkRequestsController < ApplicationController
     @work_request = error.record
     render :edit, status: :unprocessable_content
   rescue ActiveRecord::RecordNotFound
-    redirect_to work_requests_path, alert: "更新する勤務依頼が見つかりませんでした。"
+    redirect_to admin_calendar_path, alert: "更新する勤務依頼が見つかりませんでした。"
   end
 
   private
