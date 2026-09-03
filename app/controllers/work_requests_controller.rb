@@ -5,34 +5,6 @@ class WorkRequestsController < ApplicationController
       .order(:starts_at)
   end
 
-  def new
-    @work_request = WorkRequest.new
-    @skills = Skill.all
-  end
-
-  def create
-      @work_request = WorkRequest.create!(
-        business_id: 1,
-
-        required_skill_id: work_request_params[:required_skill_id],
-        starts_at: work_request_params[:starts_at],
-        ends_at: work_request_params[:ends_at],
-        required_staff_count: work_request_params[:required_staff_count],
-        title: work_request_params[:title],
-        notes: work_request_params[:notes],
-        status: work_request_params[:status]
-      )
-
-      redirect_to @work_request, notice: "勤務依頼を作成しました。"
-    rescue ActiveRecord::RecordInvalid => error
-      raise unless error.record.is_a?(WorkRequest)
-
-      @work_request = error.record
-      @skills = Skill.all
-      render :new, status: :unprocessable_content
-  end
-
-
   def show
     @work_request = WorkRequest
       .includes(:business, :required_skill, assignments: :staff_member)
@@ -62,6 +34,6 @@ class WorkRequestsController < ApplicationController
   private
 
   def work_request_params
-    params.expect(work_request: [ :busines_id, :required_skill_id, :title, :starts_at, :ends_at, :required_staff_count, :status, :notes ])
+    params.expect(work_request: [ :required_skill_id, :title, :starts_at, :ends_at, :required_staff_count, :status, :notes ])
   end
 end
